@@ -15,7 +15,7 @@
 #define debug(...) wprintw(win, __VA_ARGS__); wrefresh(win);
 #define countof(x) (sizeof(x)/sizeof(*(x)))
 
-#define DEFAULT_PORT 0x7E0
+#define DEFAULT_PORT 0x707
 
 #define msec(x) ((uint64_t)x * 1000 * 1000)
 
@@ -439,7 +439,7 @@ void do_input(void)
     wrefresh(win_input);
 }
 
-int main(int argc, char** argv)
+void curses_init(void)
 {
     initscr();
 
@@ -457,19 +457,22 @@ int main(int argc, char** argv)
     nodelay(win_input, TRUE);
 
     update_info();
+}
 
-    debug("%u\n", win);
-
+int main(int argc, char** argv)
+{
     uint64_t now, then;
 
     if(argc != 1 && argc != 4) {
-        debug("Usage: %s [id ip port]\n", argv[0]);
+        printf("Usage: %s [id ip port]\n", argv[0]);
         return 1;
     }
 
     if(!net_init((argc == 1))) {
         return 1;
     }
+
+    curses_init();
 
     srand((argc == 1) ? 0 : time(NULL));
     self_id = rand();
